@@ -39,3 +39,40 @@ Connect local repository to GitHub.
 
 Purpose:
 Manage branches.
+# FastAPI Notes
+
+## FastAPI
+
+A Python framework used to build APIs.
+
+## Uvicorn
+
+A web server used to run FastAPI applications.
+
+## API Endpoint
+
+A URL that performs an action.
+
+Example:
+
+GET /
+
+GET /health
+
+## JSON
+
+Data exchange format between frontend and backend.
+
+Example:
+
+{
+"status": "healthy"
+}
+
+## Swagger Docs
+
+Automatically generated API documentation.
+
+URL:
+
+/docs
