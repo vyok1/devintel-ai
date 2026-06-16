@@ -7,6 +7,7 @@ from app.models.user import Base
 from app.core.database import engine, get_db
 from app.schemas.user import UserCreate
 from app.services.user_service import create_user
+from app.services.gemini_service import analyze_repository
 
 Base.metadata.create_all(bind=engine)
 
@@ -55,3 +56,16 @@ def create_new_repository(
         "github_url": created_repository.github_url,
         "repository_name": created_repository.repository_name
     }
+@app.get("/test-gemini")
+def test_gemini():
+    try:
+        result = analyze_repository("FastAPI")
+
+        return {
+            "analysis": result
+        }
+
+    except Exception as e:
+        return {
+            "error": str(e)
+        }
