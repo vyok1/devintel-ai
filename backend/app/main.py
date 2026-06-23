@@ -8,7 +8,9 @@ from app.core.database import engine, get_db
 from app.schemas.user import UserCreate
 from app.services.user_service import create_user
 from app.services.gemini_service import analyze_repository
-
+from app.models.analysis_report import AnalysisReport
+from app.schemas.analysis_report import AnalysisReportCreate
+from app.services.analysis_service import create_analysis
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -69,3 +71,9 @@ def test_gemini():
         return {
             "error": str(e)
         }
+@app.post("/analysis")
+def create_analysis_report(
+    analysis: AnalysisReportCreate,
+    db: Session = Depends(get_db)
+):
+    return create_analysis(db, analysis)

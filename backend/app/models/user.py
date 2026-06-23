@@ -1,10 +1,6 @@
 from sqlalchemy import Column, Integer, String
 
-from app.core.database import engine
-from sqlalchemy.orm import declarative_base
-
-Base = declarative_base()
-
+from app.core.database import Base
 
 class User(Base):
     __tablename__ = "users"
