@@ -11,3 +11,5 @@ class Repository(Base):
     github_url = Column(String, nullable=False)
 
     repository_name = Column(String, nullable=False)
+    language = Column(String)
+    stars = Column(Integer)
