@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.models.repository import Repository
 from app.schemas.repository import RepositoryCreate
 from app.services.repository_service import create_repository
-from app.models.user import Base
+from app.core.database import Base
 from app.core.database import engine, get_db
 from app.schemas.user import UserCreate
 from app.services.user_service import create_user
@@ -11,6 +11,18 @@ from app.services.gemini_service import analyze_repository
 from app.models.analysis_report import AnalysisReport
 from app.schemas.analysis_report import AnalysisReportCreate
 from app.services.analysis_service import create_analysis
+from app.services.github_service import (
+    get_repository_info,
+    extract_repo_info
+)
+
+from app.schemas.repository import RepositoryAnalysisRequest
+
+
+from app.services.analysis_service import (
+    generate_analysis,
+    save_analysis
+)
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -50,8 +62,11 @@ def create_new_repository(
     created_repository = create_repository(
         db,
         repository.github_url,
-        repository.repository_name
+        repository.repository_name,
+        repository.language,
+        repository.stars
     )
+    
 
     return {
         "id": created_repository.id,
@@ -71,9 +86,38 @@ def test_gemini():
         return {
             "error": str(e)
         }
-@app.post("/analysis")
-def create_analysis_report(
-    analysis: AnalysisReportCreate,
+@app.post("/analyze-repository")
+def analyze_repository(
+    request: RepositoryAnalysisRequest,
     db: Session = Depends(get_db)
 ):
-    return create_analysis(db, analysis)
+
+    owner, repo = extract_repo_info(
+        request.github_url
+    )
+
+    repo_info = get_repository_info(
+        owner,
+        repo
+    )
+    created_repository = create_repository(
+    db,
+    request.github_url,
+    repo_info["name"],
+    repo_info["language"],
+    repo_info["stars"]
+)
+
+    analysis = generate_analysis(repo_info)
+
+    saved_report = save_analysis(
+    db,
+    repository_id=created_repository.id,
+    analysis=analysis
+)
+
+    return {
+        "repository": repo_info,
+        "analysis": analysis,
+        "saved_report_id": saved_report.id
+    }

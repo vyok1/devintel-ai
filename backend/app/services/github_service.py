@@ -16,3 +16,11 @@ def get_repository_info(owner, repo):
         "language": data["language"],
         "stars": data["stargazers_count"]
     }
+def extract_repo_info(github_url):
+
+    parts = github_url.rstrip("/").split("/")
+
+    owner = parts[-2]
+    repo = parts[-1]
+
+    return owner, repo

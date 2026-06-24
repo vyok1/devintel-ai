@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String
 
-from app.models.user import Base
+from app.core.database import Base
 
 
 class Repository(Base):
