@@ -10,7 +10,7 @@ from app.services.user_service import create_user
 from app.services.gemini_service import analyze_repository
 from app.models.analysis_report import AnalysisReport
 from app.schemas.analysis_report import AnalysisReportCreate
-from app.services.analysis_service import create_analysis
+
 from app.services.github_service import (
     get_repository_info,
     extract_repo_info
