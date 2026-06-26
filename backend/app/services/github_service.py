@@ -32,3 +32,20 @@ def extract_repo_info(github_url):
     repo = parts[-1]
 
     return owner, repo
+import base64
+
+
+def get_readme(owner, repo):
+
+    url = f"https://api.github.com/repos/{owner}/{repo}/readme"
+
+    response = requests.get(url)
+
+    if response.status_code != 200:
+        return ""
+
+    data = response.json()
+
+    content = data.get("content", "")
+
+    return base64.b64decode(content).decode("utf-8")

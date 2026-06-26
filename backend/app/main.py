@@ -1,4 +1,6 @@
 from fastapi import FastAPI, Depends
+from app.schemas.review import ReviewRequest
+from app.services.review_service import review_project
 from sqlalchemy.orm import Session
 from app.models.repository import Repository
 from app.schemas.repository import RepositoryCreate
@@ -121,3 +123,9 @@ def analyze_repository(
         "analysis": analysis,
         "saved_report_id": saved_report.id
     }
+@app.post("/review-project")
+def review(request: ReviewRequest):
+
+    return review_project(
+        request.project_path
+    )
